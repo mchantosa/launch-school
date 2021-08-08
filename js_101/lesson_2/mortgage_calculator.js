@@ -1,3 +1,6 @@
+const readline = require('readline-sync');
+exports.findMonthlyPayment = findMonthlyPayment;
+
 /*
 REQUIREMENTS: Create a program that
   - Requests the following information from the user:
@@ -13,13 +16,20 @@ EXECUTION:
   - Good luck hunting
 */
 
-const readline = require('readline-sync');
-exports.findMonthlyPayment = findMonthlyPayment;
-//Comment out conductUserDefinedMortgageAnalysis() to run tests quickly
-conductUserDefinedMortgageAnalysis();
+//Comment out conductMortgageAnalysis() to run tests quickly
+conductMortgageAnalysis();
 
+function conductMortgageAnalysis(){
+  let doAgain;
+  do {
+    doAUserDefinedMortgageCalculation();
+    doAgain = readline.keyInSelect(['yes', 'no'],"Would you like to run another calculation?");
+  } while(doAgain === 0)
+  //Good luck hunting
+  console.log("Happy house hunting");
+}
 
-function conductUserDefinedMortgageAnalysis() {
+function doAUserDefinedMortgageCalculation() {
   //Greet user
   console.log(`Greetings human, I understand you are interested in conducting some mortgage analysis today. Happy to be of assistance 😁\n`);
 
@@ -42,10 +52,6 @@ function conductUserDefinedMortgageAnalysis() {
   - Your loan duration is ${LOAN_DURATION_IN_MONTHS} months
   - The first payment would pay $${makeMoneyPretty(FIRST_MONTH_PRINCIPLE)} to principle and $${makeMoneyPretty(FIRST_MONTH_INTEREST)} in interest
   - Your total in interest paid over for this loan would be $${makeMoneyPretty(TOTAL_INTEREST)}`);
-
-  //Good luck hunting
-  console.log("Happy house hunting");
-
 }
 
 function askUserForApr() {

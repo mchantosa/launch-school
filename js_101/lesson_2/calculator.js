@@ -1,29 +1,86 @@
-/* 
-1. Greet user
-2. Ask the user for the first number.
-3. Ask the user for the second number.
-4. Ask the user for an operation to perform.
-5. Perform the operation on the two numbers.
-6. Print the result to the terminal.
+/*
+  - Greet user
+  - Ask the user for the first number.
+  - Ask the user for the second number.
+  - Ask the user for an operation to perform.
+  - Perform the operation on the two numbers.
+  - Print the result to the terminal.
+  - Ask user if they would like to perform another operation
+  - Say goodbye
 */
 
 const readline = require('readline-sync');
+const MESSAGES = require('./calculator_messages.json').en;
+calculator();
 
-console.log('Welcome to Calculator!');
+function calculator() {
+  prompt(MESSAGES.welcome);
+  let performCalculation = true;
+  while (performCalculation) {
+    let number1 = getOperand(`=> ${MESSAGES.requestNumber1}\n`);
+    let number2 = getOperand(`=> ${MESSAGES.requestNumber2}\n`);
+    let operation = getOperation(`=> ${MESSAGES.requestOperation}`);
+    let output = operateAddSumMultiplyDivide(number1, number2, operation);
+    prompt(`${MESSAGES.outputReturn}${output}`);
+    performCalculation = recompute(`=> ${MESSAGES.requestAnotherCalculation}`);
+  }
+  prompt(MESSAGES.goodbye);
+}
 
-let number1 = readline.question("What's the first number?\n");
-let number2 = readline.question("What's the second number?\n");
-let operation = readline.question("What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide\n");
+function prompt(message) {
+  console.log(`=> ${message}`);
+}
 
-let output;
-if (operation === '1') { 
-  output = Number(number1) + Number(number2);
-} else if (operation === '2') {
-  output = Number(number1) - Number(number2);
-} else if (operation === '3') {
-  output = Number(number1) * Number(number2);
-} else if (operation === '4') {
-  output = Number(number1) / Number(number2);
-} 
+function getOperand (message) {
+  let number = readline.question(message);
+  while (invalidNumber(number)) {
+    prompt(MESSAGES.inValidInput);
+    number = readline.question(message);
+  }
+  return Number(number);
+}
 
-console.log(`The result is: ${output}`);
+function invalidNumber(number) {
+  return Number.isNaN(Number(number)) || number.trimStart() === '';
+}
+
+function getOperation (message) {
+  let operation = readline.question(message);
+  while (!['1', '2', '3', '4'].includes(operation)) {
+    prompt(MESSAGES.choose1_4);
+    operation = readline.question(message);
+  }
+  return operation;
+}
+
+function operateAddSumMultiplyDivide(number1, number2, operation) {
+  let output;
+  switch (operation) {
+    case '1': {
+      output = number1 + number2;
+      break;
+    }
+    case '2': {
+      output = number1 - number2;
+      break;
+    }
+    case '3': {
+      output = number1 * number2;
+      break;
+    }
+    case '4': {
+      output = number1 / number2;
+      break;
+    }
+  }
+  return output;
+}
+
+function recompute(message) {
+  let response = readline.question(message);
+  while (!['1', '2'].includes(response)) {
+    prompt(MESSAGES.choose1_2);
+    response = readline.question(message);
+  }
+  return response === '1';
+}

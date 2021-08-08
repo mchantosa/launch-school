@@ -1,0 +1,26 @@
+{ 
+  "en": {
+    "welcome": "Welcome to Calculator!", 
+    "requestNumber1": "What's the first number?\n",
+    "requestNumber2": "What's the second number?\n",
+    "requestOperation": "What operation would you like to perform?\n   1) Add 2) Subtract 3) Multiply 4) Divide\n",
+    "outputReturn": "The result is: ",
+    "inValidInput": "Hmm... that doesn't look like a valid number.",
+    "choose1_4": "Must choose 1, 2, 3 or 4",
+    "choose1_2": "Must choose 1 or 2",
+    "requestAnotherCalculation": "Would you like to perform another calculation?\n   1) Yes 2) No\n",
+    "goodbye": "Thank you for using calculator!"
+  },
+  "fr": {
+    "welcome": "FR_Welcome to Calculator!", 
+    "requestNumber1": "FR_What's the first number?\n",
+    "requestNumber2": "FR_What's the second number?\n",
+    "requestOperation": "FR_What operation would you like to perform?\n   1) Add 2) Subtract 3) Multiply 4) Divide\n",
+    "outputReturn": "FR_The result is: ",
+    "inValidInput": "FR_Hmm... that doesn't look like a valid number.",
+    "choose1_4": "FR_Must choose 1, 2, 3 or 4",
+    "choose1_2": "FR_Must choose 1 or 2",
+    "requestAnotherCalculation": "FR_Would you like to perform another calculation?\n   1) Yes 2) No\n",
+    "goodbye": "FR_Thank you for using calculator!"
+  }
+}

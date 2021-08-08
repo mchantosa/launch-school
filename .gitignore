@@ -1,6 +1,7 @@
-#Mac Specific in addition to the below
+#Mac Specific in addition to the below 
 .DS_Store
 
+# Generated from https://gitignore.io
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
 

@@ -16,7 +16,7 @@ EXECUTION:
 const readline = require('readline-sync');
 exports.findMonthlyPayment = findMonthlyPayment;
 //Comment out conductUserDefinedMortgageAnalysis() to run tests quickly
-//conductUserDefinedMortgageAnalysis();
+conductUserDefinedMortgageAnalysis();
 
 
 function conductUserDefinedMortgageAnalysis() {

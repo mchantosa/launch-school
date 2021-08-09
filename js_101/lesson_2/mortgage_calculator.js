@@ -12,6 +12,7 @@ REQUIREMENTS: Create a program that
 EXECUTION:
   - Greet user
   - Acquire user input values
+  - Generate output content
   - Return inquiry results to user
   - Good luck hunting
 */
@@ -34,27 +35,27 @@ function doAUserDefinedMortgageCalculation() {
   console.log(`Greetings human, I understand you are interested in conducting some mortgage analysis today. Happy to be of assistance 😁\n`);
 
   //Acquire user input values
-  const APR = askUserForApr();    //float
-  const LOAN_AMOUNT = askUserForLoanAmount();   //float
-  const LOAN_DURATION = askUserForLoanDuration();   //{years: int, months: int}
-  const MONTHLY_INTEREST_RATE = APR / 1200;   //float
-  const LOAN_DURATION_IN_MONTHS = (LOAN_DURATION.years * 12) +
-    LOAN_DURATION.months;    //int
+  const apr = askUserForApr();    //float
+  const loanAmount = askUserForLoanAmount();   //float
+  const loanDuration = askUserForLoanDuration();   //{years: int, months: int}
+  const monthlyInterestRate = apr / 1200;   //float
+  const loanDurationInMonths = (loanDuration.years * 12) +
+    loanDuration.months;    //int
 
   //Generate output content
-  const MONTHLY_PAYMENT = findMonthlyPayment(
-    LOAN_AMOUNT, MONTHLY_INTEREST_RATE, LOAN_DURATION_IN_MONTHS);   //float
-  const FIRST_MONTH_INTEREST = LOAN_AMOUNT * MONTHLY_INTEREST_RATE;   //float
-  const FIRST_MONTH_PRINCIPLE = MONTHLY_PAYMENT - FIRST_MONTH_INTEREST;   //float
-  const TOTAL_INTEREST =
-    (MONTHLY_PAYMENT * LOAN_DURATION_IN_MONTHS) - LOAN_AMOUNT;   //float
+  const monthlyPayment = findMonthlyPayment(
+    loanAmount, monthlyInterestRate, loanDurationInMonths);   //float
+  const firstMonthInterest = loanAmount * monthlyInterestRate;   //float
+  const firstMonthPrinciple = monthlyPayment - firstMonthInterest;   //float
+  const totalInterest =
+    (monthlyPayment * loanDurationInMonths) - loanAmount;   //float
 
   //Return inquiry results to user
-  console.log(`For a home loan of the amount $${makeMoneyPretty(LOAN_AMOUNT)} with an APR of ${APR} over a period of ${LOAN_DURATION.years} years and ${LOAN_DURATION.months} months: 
-  - Your monthly payment is $${makeMoneyPretty(MONTHLY_PAYMENT)}
-  - Your loan duration is ${LOAN_DURATION_IN_MONTHS} months
-  - The first payment would pay $${makeMoneyPretty(FIRST_MONTH_PRINCIPLE)} to principle and $${makeMoneyPretty(FIRST_MONTH_INTEREST)} in interest
-  - Your total in interest paid over for this loan would be $${makeMoneyPretty(TOTAL_INTEREST)}`);
+  console.log(`For a home loan of the amount $${makeMoneyPretty(loanAmount)} with an APR of ${apr}% over a period of ${loanDuration.years} years and ${loanDuration.months} months: 
+  - Your monthly payment is $${makeMoneyPretty(monthlyPayment)}
+  - Your loan duration is ${loanDurationInMonths} months
+  - The first payment would pay $${makeMoneyPretty(firstMonthPrinciple)} to principle and $${makeMoneyPretty(firstMonthInterest)} in interest
+  - Your total in interest paid over the duration of this loan would be $${makeMoneyPretty(totalInterest)}`);
 }
 
 function askUserForApr() {

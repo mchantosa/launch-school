@@ -4,7 +4,7 @@
     "readline-sync": "^1.4.10"
   },
   "scripts": {
-    "start": "node js_101/lesson_2/mortgage_calculator.js",
+    "start": "node js_101/lesson_2/rock_paper_scissor_lizard_spock.js",
     "calc": "node js_101/lesson_2/mortgage_calculator.js",
     "test": "jest -t 'mortgage_calculator'",
     "test:watch": "jest --watch"

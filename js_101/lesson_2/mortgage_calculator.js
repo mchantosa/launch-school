@@ -118,8 +118,8 @@ function askUserForLoanDurationMonths() {
 
 function findMonthlyPayment(
   loanAmount, monthlyInterestRate, loanDurationInMonths) {
-  return (loanAmount * monthlyInterestRate) /
-  (1 - Math.pow((1 + monthlyInterestRate),(-loanDurationInMonths)));
+  return (loanAmount * monthlyInterestRate) / (
+    1 - Math.pow((1 + monthlyInterestRate),(-loanDurationInMonths)));
 }
 
 function makeMoneyPretty(money) {

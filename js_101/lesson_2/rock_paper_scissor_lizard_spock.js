@@ -18,32 +18,47 @@ console.log(`Greetings human, thank you for playing ${VALID_CHOICES.join(', ')} 
 if (readline.keyInYNStrict('\nWould you like for me to review the rules?')) {
   console.log(rockPaperScissorLizardSpockRules);
 }
+let playAgain = true;
+do {
+  playASet();
+  playAgain = readline.keyInYNStrict('\nAnother game?');
+} while (playAgain);
+console.log("\nPerhaps another time, it's been fun human");
 
-const NUMBER_OF_ROUNDS_TO_BE_PLAYED = askPlayerBestOfHowManyRounds();
-const gameTalley = {computer: 0, player: 0};
-const definitiveWin = (NUMBER_OF_ROUNDS_TO_BE_PLAYED + 1) / 2;
 
-while (Math.max(gameTalley.computer, gameTalley.player) < definitiveWin) {
-  let roundResult = playOneRound();
-  if (['computer', 'player'].includes(roundResult[0])) {
-    gameTalley[roundResult[0]]++;
-    if (Math.max(gameTalley.computer, gameTalley.player) < definitiveWin) {
-      console.log(`\nYou ${gameTalley.player}, me ${gameTalley.computer}, let's go again`);
-    } else {
-      const iVersesYou = (gameTalley.player > gameTalley.computer) ? 'you' : 'I';
-      console.clear();
-      console.log(`\nBest of ${NUMBER_OF_ROUNDS_TO_BE_PLAYED} accomplished. You ${gameTalley.player}, me ${gameTalley.computer}, ${iVersesYou} win! Good job human 😁`);
-    }
-  } else if (roundResult[0] === 'break') {
-    if (roundResult[1] === 'player says make it stop') {
-      console.log('\nSorry to see you go friend, maybe next time');
-      break;
-    } else {
-      console.log(`\nOoooooo, looks like a tie. We both chose ${roundResult[1]}, let's go again`);
+function playASet() {
+  const NUMBER_OF_ROUNDS_TO_BE_PLAYED = askPlayerBestOfHowManyRounds();
+  const gameTalley = {computer: 0, player: 0};
+  const definitiveWin = (NUMBER_OF_ROUNDS_TO_BE_PLAYED + 1) / 2;
+
+  while (Math.max(gameTalley.computer, gameTalley.player) < definitiveWin) {
+    let roundResult = playOneRound();
+    if (['computer', 'player'].includes(roundResult[0])) {
+      processASuccessfulRound(
+        roundResult, gameTalley, NUMBER_OF_ROUNDS_TO_BE_PLAYED, definitiveWin);
+    } else if (roundResult[0] === 'break') {
+      if (roundResult[1] === 'player says make it stop') {
+        console.log('\nSorry to see you go friend, maybe next time');
+        break;
+      } else {
+        console.log(`\nOoooooo, looks like a tie. We both chose ${roundResult[1]}, let's go again`);
+        console.log(`\nYou ${gameTalley.player}, me ${gameTalley.computer}, let's go again`);
+      }
     }
   }
 }
 
+function processASuccessfulRound(
+  roundResult, gameTalley, NUMBER_OF_ROUNDS_TO_BE_PLAYED, definitiveWin) {
+  gameTalley[roundResult[0]]++;
+  if (Math.max(gameTalley.computer, gameTalley.player) < definitiveWin) {
+    console.log(`\nYou ${gameTalley.player}, me ${gameTalley.computer}, let's go again`);
+  } else {
+    const iVersesYou = (gameTalley.player > gameTalley.computer) ? 'you' : 'I';
+    console.clear();
+    console.log(`\nBest of ${NUMBER_OF_ROUNDS_TO_BE_PLAYED} accomplished. You ${gameTalley.player}, me ${gameTalley.computer}, ${iVersesYou} win! Good job human 😁`);
+  }
+}
 
 function askPlayerBestOfHowManyRounds() {
   let userBestOfHowManyInput;

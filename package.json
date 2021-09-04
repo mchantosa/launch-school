@@ -3,10 +3,11 @@
     "jest": "^27.0.6",
     "readline-sync": "^1.4.10"
   },
+  "main": "js_101/lesson_6/tictactoe.js",
   "scripts": {
-    "start": "node js_101/lesson_2/rock_paper_scissor_lizard_spock.js",
+    "start": "node js_101/lesson_6/tictactoe.js",
     "calc": "node js_101/lesson_2/mortgage_calculator.js",
-    "test": "jest -t 'mortgage_calculator'",
+    "test": "jest easy_2.test.js",
     "test:watch": "jest --watch"
   },
   "devDependencies": {

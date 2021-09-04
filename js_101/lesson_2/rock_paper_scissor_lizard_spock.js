@@ -1,6 +1,5 @@
 const readline = require('readline-sync');
 
-
 const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'Spock'];
 const EVALUATOR_1 = ['rock' , 'lizard' , 'Spock' , 'scissors' , 'paper'];
 const EVALUATOR_2 = ['lizard' , 'paper' , 'Spock' , 'rock' , 'scissors'];

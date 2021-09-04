@@ -59,16 +59,13 @@ function operateAddSumMultiplyDivide(number1, number2, operation) {
     case '1': {
       output = number1 + number2;
       break;
-    }
-    case '2': {
+    } case '2': {
       output = number1 - number2;
       break;
-    }
-    case '3': {
+    } case '3': {
       output = number1 * number2;
       break;
-    }
-    case '4': {
+    } case '4': {
       output = number1 / number2;
       break;
     }

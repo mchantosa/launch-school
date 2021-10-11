@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node js_101/lesson_6/tictactoe.js",
     "calc": "node js_101/lesson_2/mortgage_calculator.js",
-    "test": "jest easy_2.test.js",
+    "test": "jest /lesson_6/*",
     "test:watch": "jest --watch"
   },
   "devDependencies": {

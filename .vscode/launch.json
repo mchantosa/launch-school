@@ -12,7 +12,7 @@
         "<node_internals>/**"
       ],
       "console": "integratedTerminal",
-      "program": "${workspaceFolder}/js_101/lesson_6/tictactoe.js"
+      "program": "${workspaceFolder}/js_101/lesson_6/twenty_one.js"
     }
   ]
 }

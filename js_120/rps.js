@@ -2,7 +2,7 @@ const readline = require('readline-sync');
 
 const MOVES = {
   choices: ['rock', 'paper', 'scissors', 'lizard', 'spock'],
-  heirarchy: {
+  hierarchy: {
     rock: { beats: ['lizard', 'scissors'], losesTo: ['paper', 'spock']}, // crushes lizard, crushes scissors
     paper: { beats: ['rock', 'spock'], losesTo: ['scissors', 'lizard']},//covers rock. disproves spock
     scissors: { beats: ['paper', 'lizard'], losesTo: ['spock', 'rock']},  //cuts paper, decapitates lizard
@@ -37,7 +37,7 @@ const RPSGame = {
 
     if (humanMove === computerMove) {
       console.log("It's a tie");
-    } else if (MOVES.heirarchy[humanMove].beats.includes(computerMove)) {
+    } else if (MOVES.hierarchy[humanMove].beats.includes(computerMove)) {
       console.log('You win this round!');
       this.human.incrementScore();
     } else {
@@ -120,7 +120,7 @@ function createComputer() {
         this.move = chooseRandomly(MOVES.choices);
       } else {
         const opponentChoiceRoll = chooseRandomlyByWeight(opponentmoves);
-        this.move = chooseRandomly(MOVES.heirarchy[opponentChoiceRoll].losesTo);
+        this.move = chooseRandomly(MOVES.hierarchy[opponentChoiceRoll].losesTo);
       }
     },
     incrementScore() {this.score += 1},

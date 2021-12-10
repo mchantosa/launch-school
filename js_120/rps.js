@@ -3,11 +3,11 @@ const readline = require('readline-sync');
 const MOVES = {
   choices: ['rock', 'paper', 'scissors', 'lizard', 'spock'],
   heirarchy: {
-    rock: { winners: ['lizard', 'scissors'], lossers: ['paper', 'spock']}, // crushes lizard, crushes scissors
-    paper: { winners: ['rock', 'spock'], lossers: ['scissors', 'lizard']},//covers rock. disproves spock
-    scissors: { winners: ['paper', 'lizard'], lossers: ['spock', 'rock']},  //cuts paper, decapitates lizard
-    lizard: { winners: ['spock', 'paper'], lossers: ['rock', 'scissors']}, //poisons spock, eats paper
-    spock: { winners: ['scissors', 'rock'], lossers: ['paper', 'lizard']}, //smashes scissors, vaporizes rock
+    rock: { beats: ['lizard', 'scissors'], losesTo: ['paper', 'spock']}, // crushes lizard, crushes scissors
+    paper: { beats: ['rock', 'spock'], losesTo: ['scissors', 'lizard']},//covers rock. disproves spock
+    scissors: { beats: ['paper', 'lizard'], losesTo: ['spock', 'rock']},  //cuts paper, decapitates lizard
+    lizard: { beats: ['spock', 'paper'], losesTo: ['rock', 'scissors']}, //poisons spock, eats paper
+    spock: { beats: ['scissors', 'rock'], losesTo: ['paper', 'lizard']}, //smashes scissors, vaporizes rock
   },
 };
 
@@ -20,7 +20,7 @@ const RPSGame = {
   },
 
   displayScore() {
-    console.log(`Current score: you {${this.human.score}}, cumputer {${this.computer.score}}`);
+    console.log(`Current score: you {${this.human.score}}, computer {${this.computer.score}}`);
   },
 
   resetScores() {
@@ -37,7 +37,7 @@ const RPSGame = {
 
     if (humanMove === computerMove) {
       console.log("It's a tie");
-    } else if (MOVES.heirarchy[humanMove].winners.includes(computerMove)) {
+    } else if (MOVES.heirarchy[humanMove].beats.includes(computerMove)) {
       console.log('You win this round!');
       this.human.incrementScore();
     } else {
@@ -81,7 +81,7 @@ const RPSGame = {
       if (!this.playAgain()) break;
       this.resetScores();
     }
-    console.log(this.human.moveLog);
+    console.log(this.human.moves);
     this.displayGoodbyeMessage();
   }
 };
@@ -90,7 +90,7 @@ RPSGame.play();
 
 function createHuman() {
   return { move: null,
-    moveLog:[],
+    moves:[],
     score: 0,
     choose() {
       let choice;
@@ -101,11 +101,11 @@ function createHuman() {
         console.log('Sorry, invalid choice.');
       }
       this.move = choice;
-      this.moveLog.push(choice);
+      this.moves.push(choice);
     },
     incrementScore() { this.score += 1},
     resetScore() {this.score = 0},
-    getMoveLog() {return this.moveLog},
+    getmoves() {return this.moves},
   };
 }
 
@@ -114,13 +114,13 @@ function createComputer() {
     move: null,
     score: 0,
 
-    choose(oponent) {
-      const oponentMoveLog = oponent.getMoveLog();
-      if (oponentMoveLog.length === 0) {
+    choose(opponent) {
+      const opponentmoves = opponent.getmoves();
+      if (opponentmoves.length === 0) {
         this.move = chooseRandomly(MOVES.choices);
       } else {
-        const oponentChoiceRoll = chooseRandomlyByWeight(oponentMoveLog);
-        this.move = chooseRandomly(MOVES.heirarchy[oponentChoiceRoll].lossers);
+        const opponentChoiceRoll = chooseRandomlyByWeight(opponentmoves);
+        this.move = chooseRandomly(MOVES.heirarchy[opponentChoiceRoll].losesTo);
       }
     },
     incrementScore() {this.score += 1},
@@ -155,7 +155,7 @@ function chooseRandomlyByWeight(arr) {
   for (let index = 0; index < weightedMap[1].length; index++) {
     if (random < weightedMap[1][index]) return weightedMap[0][index];
   }
-  console.log('this be EXTREMELY improbable');
+  console.log('this be EXTREMELY improbable, throw excpetion?');
   console.log(weightedMap);
   return weightedMap[1].pop();
 }

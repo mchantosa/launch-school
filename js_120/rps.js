@@ -1,22 +1,30 @@
+/*eslint max-statements: ["error", 20]*/
+/*eslint max-lines-per-function: ["error", 40]*/
 const readline = require('readline-sync');
 
 const MOVES = {
   choices: ['rock', 'paper', 'scissors', 'lizard', 'spock'],
   hierarchy: {
-    rock: { beats: ['lizard', 'scissors'], losesTo: ['paper', 'spock']}, // crushes lizard, crushes scissors
-    paper: { beats: ['rock', 'spock'], losesTo: ['scissors', 'lizard']},//covers rock. disproves spock
+    rock: { beats: ['lizard', 'scissors'], losesTo: ['paper', 'spock']},  // crushes lizard, crushes scissors
+    paper: { beats: ['rock', 'spock'], losesTo: ['scissors', 'lizard']},  //covers rock. disproves spock
     scissors: { beats: ['paper', 'lizard'], losesTo: ['spock', 'rock']},  //cuts paper, decapitates lizard
-    lizard: { beats: ['spock', 'paper'], losesTo: ['rock', 'scissors']}, //poisons spock, eats paper
-    spock: { beats: ['scissors', 'rock'], losesTo: ['paper', 'lizard']}, //smashes scissors, vaporizes rock
+    lizard: { beats: ['spock', 'paper'], losesTo: ['rock', 'scissors']},  //poisons spock, eats paper
+    spock: { beats: ['scissors', 'rock'], losesTo: ['paper', 'lizard']},  //smashes scissors, vaporizes rock
   },
 };
 
+
 const RPSGame = {
+  WIN_SCORE: 5,
   human: createHuman(),
   computer: createComputer(),
 
+  pause() {
+    readline.question('Hit Enter key to continue.', {hideEchoBack: true, mask: ''});
+  },
+
   displayWelcomeMessage() {
-    console.log('Welcome to Rock, Paper, Scissors, we are playing best of 5.');
+    console.log(`Welcome to Rock, Paper, Scissors, we are playing best of ${this.WIN_SCORE}.`);
   },
 
   displayScore() {
@@ -32,6 +40,7 @@ const RPSGame = {
     let humanMove = this.human.move;
     let computerMove = this.computer.move;
 
+    console.clear();
     console.log(`You chose: ${this.human.move}`);
     console.log(`The computer chose: ${this.computer.move}`);
 
@@ -49,113 +58,121 @@ const RPSGame = {
   displayMatchWinner() {
     console.clear();
     this.displayScore();
-    console.log((this.human.score === 5) ? 'You win!' : 'Computer wins!');
+    console.log((this.human.score === this.WIN_SCORE) ? 'You win!' : 'Computer wins!');
   },
 
   displayGoodbyeMessage() {
+    console.clear();
     console.log('Thanks for playing Rock, Paper, Scissors. Goodbye!');
   },
 
   playAgain() {
+    console.clear();
     console.log('Would you like to play again? (y/n)');
     let answer = readline.question();
-    return answer.toLowerCase()[0] === 'y';
+    return (answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes');
   },
 
   playMatch() {
     while (true) {
+      console.clear();
       this.displayScore();
       this.computer.choose(this.human);
       this.human.choose();
       this.displayRoundWinner();
-      if (this.human.score === 5 || this.computer.score === 5) break;
+      this.pause();
+      if (this.human.score === this.WIN_SCORE ||
+        this.computer.score === this.WIN_SCORE) break;
     }
     this.displayMatchWinner();
+    this.pause();
   },
 
   play() {
     console.clear();
     this.displayWelcomeMessage();
+    this.pause();
     while (true) {
       this.playMatch();
       if (!this.playAgain()) break;
       this.resetScores();
     }
-    console.log(this.human.moves);
     this.displayGoodbyeMessage();
   }
 };
 
 RPSGame.play();
 
-function createHuman() {
-  return { move: null,
-    moves:[],
-    score: 0,
-    choose() {
-      let choice;
-      while (true) {
-        console.log('Please choose rock, paper, scissors, lizard, or spock:');
-        choice = readline.question();
-        if (MOVES.choices.includes(choice)) break;
-        console.log('Sorry, invalid choice.');
-      }
-      this.move = choice;
-      this.moves.push(choice);
-    },
-    incrementScore() { this.score += 1},
-    resetScore() {this.score = 0},
-    getmoves() {return this.moves},
-  };
-}
-
-function createComputer() {
-  return {
+function createPlayer() {
+  const player = {
     move: null,
     score: 0,
 
-    choose(opponent) {
-      const opponentmoves = opponent.getmoves();
-      if (opponentmoves.length === 0) {
-        this.move = chooseRandomly(MOVES.choices);
-      } else {
-        const opponentChoiceRoll = chooseRandomlyByWeight(opponentmoves);
-        this.move = chooseRandomly(MOVES.hierarchy[opponentChoiceRoll].losesTo);
-      }
-    },
-    incrementScore() {this.score += 1},
     resetScore() {this.score = 0},
+    incrementScore() {this.score += 1},
   };
+
+  return player;
 }
 
-function chooseRandomly(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+function createHuman() {
+  const human = createPlayer();
+
+  human.moves = [];
+
+  human.getMoves = function () {
+    return this.moves;
+  };
+
+  human.choose = function () {
+    let choice;
+    while (true) {
+      console.log('Please choose rock, paper, scissors, lizard, or spock:');
+      choice = readline.question().trim();
+      if (choice && (choice.toLowerCase()[0] === 'r')) {
+        this.move = 'rock';
+        break;
+      } else if (choice && (choice.toLowerCase()[0] === 'p')) {
+        this.move = 'paper';
+        break;
+      } else if (choice && (choice.toLowerCase().slice(0,2) === 'sc')) {
+        this.move = 'scissors';
+        break;
+      } else if (choice && (choice.toLowerCase()[0] === 'l')) {
+        this.move = 'lizard';
+        break;
+      } else if ((choice && choice.toLowerCase().slice(0,2) === 'sp')) {
+        this.move = 'spock';
+        break;
+      }
+      console.log('Sorry, invalid choice.');
+    }
+    this.moves.push(this.move);
+  };
+  return human;
+
 }
 
-function arrToWeightedMap(arr) {
-  const arrMap = {};
-  arr.forEach(element => {
-    if (arrMap[element]) arrMap[element] += 1;
-    else arrMap[element] = 1;
-  });
-  const keys = Object.keys(arrMap);
-  const weightedMap = [keys, []];
-  let trailingStackedPercent = 0;
-  keys.forEach(key => {
-    const percent = arrMap[key] / arr.length;
-    weightedMap[1].push(percent + trailingStackedPercent);
-    trailingStackedPercent += percent;
-  });
-  return weightedMap;
-}
+function createComputer() {
+  const computer = createPlayer();
 
-function chooseRandomlyByWeight(arr) {
-  const weightedMap = arrToWeightedMap(arr);
-  const random = Math.random();
-  for (let index = 0; index < weightedMap[1].length; index++) {
-    if (random < weightedMap[1][index]) return weightedMap[0][index];
-  }
-  console.log('this be EXTREMELY improbable, throw excpetion?');
-  console.log(weightedMap);
-  return weightedMap[1].pop();
+  computer.choose = function (opponent) {
+    const opponentmoves = opponent.getMoves();
+    if (opponentmoves.length === 0) {
+      this.move = this.chooseRandomly(MOVES.choices);
+    } else {
+      this.move = this.chooseRandomlyByWeight(opponentmoves);
+    }
+  };
+
+  computer.chooseRandomly = function (arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
+
+  computer.chooseRandomlyByWeight = function (arr) {
+    const weightedHumanChoice = this.chooseRandomly(arr);
+    return this.chooseRandomly(MOVES.hierarchy[weightedHumanChoice].losesTo);
+  };
+
+  return computer;
 }

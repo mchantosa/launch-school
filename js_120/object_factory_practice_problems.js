@@ -29,11 +29,11 @@ books.push(createBook("Aunts aren't Gentlemen", "PG Wodehouse", true));
 books[1].readBook();
 books.forEach(book => console.log(book.getDescriotion()));
 
-function createBook(Title, Author, Read = false) {
+function createBook(title, author, read = false) {
   return {
-    title: Title,
-    author: Author,
-    read: Read,
+    title,
+    author,
+    read,
     getDescriotion() {
       return `${this.title} was written by ${this.author}.` +
              `${(this.read) ? " I have read it" : "I haven't read it"}.`;

@@ -1,6 +1,6 @@
 # Last update: 05 Oct 2020
 root: true
-##parser: babel-eslint
+parser: babel-eslint
 parserOptions:
   ecmaVersion: 6
   ecmaFeatures:
@@ -86,7 +86,7 @@ rules:
   no-confusing-arrow:
     - error
     - allowParens: true
-  no-console: off
+  no-console: 'off'
   no-const-assign: error
   no-constant-condition:
     - error

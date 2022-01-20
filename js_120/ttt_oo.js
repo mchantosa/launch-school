@@ -1,6 +1,7 @@
-let readline = require("readline-sync"); 
+let readline = require("readline-sync");
 
 class Square {
+
   static UNUSED_SQUARE = " ";
   static HUMAN_MARKER = "X";
   static COMPUTER_MARKER = "O";
@@ -114,10 +115,9 @@ class TTTGame {
 
   play() {
     this.displayWelcomeMessage();
-
     this.board.display();
+
     while (true) {
-      // this.board.display(); -- Delete this line
       this.humanMoves();
       if (this.gameOver()) break;
 
@@ -157,7 +157,8 @@ class TTTGame {
 
     while (true) {
       let validChoices = this.board.unusedSquares();
-      const prompt = `Choose a square (${validChoices.join(", ")}): `;
+
+      const prompt = `Choose a square (${TTTGame.joinOr(validChoices)}): `;
       choice = readline.question(prompt);
 
       if (validChoices.includes(choice)) break;
@@ -165,7 +166,7 @@ class TTTGame {
       console.log("Sorry, that's not a valid choice.");
       console.log("");
     }
-    
+
     this.board.markSquareAt(choice, this.human.getMarker());
   }
 
@@ -197,6 +198,14 @@ class TTTGame {
     return TTTGame.POSSIBLE_WINNING_ROWS.some(row => {
       return this.board.countMarkersFor(player, row) === 3;
     });
+  }
+
+  static joinOr = function (arr, sep = ', ', conj = 'or') {
+    if (arr.length === 1) return arr.toString();
+    if (arr.length === 2) return arr.join(` ${conj} `);
+    const arrFront = arr.slice();
+    const arrEnd = arrFront.pop();
+    return arrFront.join(`${sep}`) + `${sep}${conj} ` + arrEnd;
   }
 }
 

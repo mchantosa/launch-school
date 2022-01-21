@@ -58,6 +58,11 @@ class Board {
     this.squares[key].setMarker(marker);
   }
 
+  randomlyMarkSquareAt(keys, marker) {
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    this.markSquareAt(randomKey, marker);
+  }
+
   unusedSquares() {
     let keys = Object.keys(this.squares);
     return keys.filter(key => this.squares[key].isUnused());
@@ -91,22 +96,6 @@ class Human extends Player {
 class Computer extends Player {
   constructor() {
     super(Square.COMPUTER_MARKER);
-  }
-
-  findDefensiveMove(game) {
-    const defensiveKeys = [];
-    const unusedSquares = game.board.unusedSquares();
-    game.constructor.POSSIBLE_WINNING_ROWS.forEach(row => {
-      if ((game.board.countMarkersFor(game.human, row) === 2) &&
-          (game.board.countMarkersFor(game.computer, row) === 0)) {
-        row.forEach(key => {
-          if (unusedSquares.includes(key)) {
-            defensiveKeys.push(key);
-          }
-        });
-      }
-    });
-    return defensiveKeys;
   }
 }
 
@@ -196,14 +185,16 @@ class TTTGame {
   }
 
   computerMoves() {
-    const defensiveMoves = this.computer.findDefensiveMove(this);
-    if (defensiveMoves.length > 0) {
-      this.board.markSquareAt(TTTGame.pickRandomly(defensiveMoves),
-        this.computer.getMarker());
+    const winningMoves = this.findWinningMoves(this.computer);
+    const defensiveMoves = this.findWinningMoves(this.human);
+    const validChoices = this.board.unusedSquares();
+    const marker = this.computer.marker;
+    if (winningMoves.length > 0) {
+      this.board.randomlyMarkSquareAt(winningMoves, marker);
+    } else if (defensiveMoves.length > 0) {
+      this.board.randomlyMarkSquareAt(defensiveMoves, marker);
     } else {
-      const validChoices = this.board.unusedSquares();
-      this.board.markSquareAt(TTTGame.pickRandomly(validChoices),
-        this.computer.getMarker());
+      this.board.randomlyMarkSquareAt(validChoices, marker);
     }
   }
 
@@ -224,6 +215,21 @@ class TTTGame {
     return TTTGame.POSSIBLE_WINNING_ROWS.some(row => {
       return this.board.countMarkersFor(player, row) === 3;
     });
+  }
+
+  findWinningMoves(player) {
+    const defensiveKeys = [];
+    const unusedSquares = this.board.unusedSquares();
+    TTTGame.POSSIBLE_WINNING_ROWS.forEach(row => {
+      if (this.board.countMarkersFor(player, row) === 2) {
+        row.forEach(key => {
+          if (unusedSquares.includes(key)) {
+            defensiveKeys.push(key);
+          }
+        });
+      }
+    });
+    return defensiveKeys;
   }
 
   playAgain() {
@@ -251,11 +257,6 @@ class TTTGame {
     const arrFront = arr.slice();
     const arrEnd = arrFront.pop();
     return arrFront.join(`${sep}`) + `${sep}${conj} ` + arrEnd;
-  }
-
-  static pickRandomly (arr) {
-    const len = arr.length;
-    return arr[Math.floor(Math.random() * len)];
   }
 }
 

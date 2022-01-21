@@ -115,6 +115,16 @@ class TTTGame {
 
   play() {
     this.displayWelcomeMessage();
+    while (true) {
+      this.playRound();
+      if (!this.playAgain()) break;
+      this.resetBoard();
+      this.board.displayWithClear();
+    }
+    this.displayGoodbyeMessage();
+  }
+
+  playRound() {
     this.board.display();
 
     while (true) {
@@ -129,7 +139,6 @@ class TTTGame {
 
     this.board.displayWithClear();
     this.displayResults();
-    this.displayGoodbyeMessage();
   }
 
   displayWelcomeMessage() {
@@ -198,6 +207,25 @@ class TTTGame {
     return TTTGame.POSSIBLE_WINNING_ROWS.some(row => {
       return this.board.countMarkersFor(player, row) === 3;
     });
+  }
+
+  playAgain() {
+    let choice;
+
+    while (true) {
+      const prompt = `Would you like to play again? (y, n): `;
+      choice = readline.question(prompt).toLowerCase();
+      if (['y', 'n'].includes(choice)) break;
+
+      console.log("Sorry, that's not a valid choice, please choose 'y' or 'n'.");
+      console.log("");
+    }
+
+    return choice === 'y';
+  }
+
+  resetBoard() {
+    this.board = new Board();
   }
 
   static joinOr = function (arr, sep = ', ', conj = 'or') {

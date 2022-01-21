@@ -96,11 +96,48 @@ class Human extends Player {
   constructor() {
     super(Square.HUMAN_MARKER);
   }
+
+  moves(game) {
+
+    const self = game;
+    let choice;
+
+    while (true) {
+      let validChoices = self.board.unusedSquares();
+
+      const prompt = `Choose a square (${self.constructor.joinOr(validChoices)}): `;
+      choice = readline.question(prompt);
+
+      if (validChoices.includes(choice)) break;
+
+      console.log("Sorry, that's not a valid choice.");
+      console.log("");
+    }
+
+    self.board.markSquareAt(choice, self.human.getMarker());
+  }
 }
 
 class Computer extends Player {
   constructor() {
     super(Square.COMPUTER_MARKER);
+  }
+
+  moves(game) {
+    const self = game;
+    const winningMoves = self.findWinningMoves(self.computer);
+    const defensiveMoves = self.findWinningMoves(self.human);
+    const validChoices = self.board.unusedSquares();
+    const marker = self.computer.marker;
+    if (winningMoves.length > 0) {
+      self.board.randomlyMarkSquareAt(winningMoves, marker);
+    } else if (defensiveMoves.length > 0) {
+      self.board.randomlyMarkSquareAt(defensiveMoves, marker);
+    } else if (validChoices.includes('5')) {
+      self.board.markSquareAt('5', marker);
+    } else {
+      self.board.randomlyMarkSquareAt(validChoices, marker);
+    }
   }
 }
 
@@ -121,6 +158,7 @@ class TTTGame {
     this.board = new Board();
     this.human = new Human();
     this.computer = new Computer();
+    this.goesFirst = Math.floor(Math.random() * 2);
   }
 
   play() {
@@ -139,24 +177,20 @@ class TTTGame {
   }
 
   playRound() {
+    let turn = this.goesFirst;
+    this.updateGoesFirst();
     this.board.display();
 
     while (true) {
-      this.humanMoves();
+      const player = this.getPlayer(turn);
+      player.moves(this);
       if (this.gameOver()) {
-        if (this.isWinner(this.human)) this.human.updateWins();
+        if (this.isWinner(player)) player.updateWins();
         break;
       }
-
-      this.computerMoves();
-      if (this.gameOver()) {
-        if (this.isWinner(this.computer)) this.computer.updateWins();
-        break;
-      }
-
+      turn = (turn + 1) % 2;
       this.board.displayWithClear();
     }
-
     this.board.displayWithClear();
     this.displayResults();
   }
@@ -164,6 +198,8 @@ class TTTGame {
   displayWelcomeMessage() {
     console.clear();
     console.log("Welcome to Tic Tac Toe!");
+    const player = (this.goesFirst === 0) ? 'you' : 'I';
+    console.log(`First player selected randomly, ${player} go first`);
     console.log("");
   }
 
@@ -182,38 +218,12 @@ class TTTGame {
     console.log(`Score: You [${this.human.wins}], Me: [${this.computer.wins}]`);
   }
 
-  humanMoves() {
-    let choice;
-
-    while (true) {
-      let validChoices = this.board.unusedSquares();
-
-      const prompt = `Choose a square (${TTTGame.joinOr(validChoices)}): `;
-      choice = readline.question(prompt);
-
-      if (validChoices.includes(choice)) break;
-
-      console.log("Sorry, that's not a valid choice.");
-      console.log("");
-    }
-
-    this.board.markSquareAt(choice, this.human.getMarker());
+  getPlayer(turn) {
+    return (turn === 0) ? this.human : this.computer;
   }
 
-  computerMoves() {
-    const winningMoves = this.findWinningMoves(this.computer);
-    const defensiveMoves = this.findWinningMoves(this.human);
-    const validChoices = this.board.unusedSquares();
-    const marker = this.computer.marker;
-    if (winningMoves.length > 0) {
-      this.board.randomlyMarkSquareAt(winningMoves, marker);
-    } else if (defensiveMoves.length > 0) {
-      this.board.randomlyMarkSquareAt(defensiveMoves, marker);
-    } else if (validChoices.includes('5')) {
-      this.board.markSquareAt('5', marker);
-    } else {
-      this.board.randomlyMarkSquareAt(validChoices, marker);
-    }
+  updateGoesFirst() {
+    this.goesFirst = (this.goesFirst + 1) % 2;
   }
 
   gameOver() {

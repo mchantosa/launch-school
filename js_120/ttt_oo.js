@@ -80,10 +80,15 @@ class Board {
 class Player {
   constructor(marker) {
     this.marker = marker;
+    this.wins = 0;
   }
 
   getMarker() {
     return this.marker;
+  }
+
+  updateWins() {
+    this.wins += 1;
   }
 }
 
@@ -122,6 +127,10 @@ class TTTGame {
     this.displayWelcomeMessage();
     while (true) {
       this.playRound();
+      if ((this.human.wins === 3) || (this.computer.wins === 3)) {
+        this.bestOf3Message();
+        break;
+      }
       if (!this.playAgain()) break;
       this.resetBoard();
       this.board.displayWithClear();
@@ -134,10 +143,16 @@ class TTTGame {
 
     while (true) {
       this.humanMoves();
-      if (this.gameOver()) break;
+      if (this.gameOver()) {
+        if (this.isWinner(this.human)) this.human.updateWins();
+        break;
+      }
 
       this.computerMoves();
-      if (this.gameOver()) break;
+      if (this.gameOver()) {
+        if (this.isWinner(this.computer)) this.computer.updateWins();
+        break;
+      }
 
       this.board.displayWithClear();
     }
@@ -164,6 +179,7 @@ class TTTGame {
     } else {
       console.log("A tie game. How boring.");
     }
+    console.log(`Score: You [${this.human.wins}], Me: [${this.computer.wins}]`);
   }
 
   humanMoves() {
@@ -251,6 +267,14 @@ class TTTGame {
 
   resetBoard() {
     this.board = new Board();
+  }
+
+  bestOf3Message() {
+    if (this.human.wins === 3) {
+      console.log(`You have won best of 5, you are victorious!`);
+    } else {
+      console.log(`I have won best of 5, I am victorious!`);
+    }
   }
 
   static joinOr (arr, sep = ', ', conj = 'or') {

@@ -193,6 +193,8 @@ class TTTGame {
       this.board.randomlyMarkSquareAt(winningMoves, marker);
     } else if (defensiveMoves.length > 0) {
       this.board.randomlyMarkSquareAt(defensiveMoves, marker);
+    } else if (validChoices.includes('5')) {
+      this.board.markSquareAt('5', marker);
     } else {
       this.board.randomlyMarkSquareAt(validChoices, marker);
     }

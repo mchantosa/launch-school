@@ -92,6 +92,22 @@ class Computer extends Player {
   constructor() {
     super(Square.COMPUTER_MARKER);
   }
+
+  findDefensiveMove(game) {
+    const defensiveKeys = [];
+    const unusedSquares = game.board.unusedSquares();
+    game.constructor.POSSIBLE_WINNING_ROWS.forEach(row => {
+      if ((game.board.countMarkersFor(game.human, row) === 2) &&
+          (game.board.countMarkersFor(game.computer, row) === 0)) {
+        row.forEach(key => {
+          if (unusedSquares.includes(key)) {
+            defensiveKeys.push(key);
+          }
+        });
+      }
+    });
+    return defensiveKeys;
+  }
 }
 
 class TTTGame {
@@ -180,14 +196,15 @@ class TTTGame {
   }
 
   computerMoves() {
-    let validChoices = this.board.unusedSquares();
-    let choice;
-
-    do {
-      choice = Math.floor((9 * Math.random()) + 1).toString();
-    } while (!validChoices.includes(choice));
-
-    this.board.markSquareAt(choice, this.computer.getMarker());
+    const defensiveMoves = this.computer.findDefensiveMove(this);
+    if (defensiveMoves.length > 0) {
+      this.board.markSquareAt(TTTGame.pickRandomly(defensiveMoves),
+        this.computer.getMarker());
+    } else {
+      const validChoices = this.board.unusedSquares();
+      this.board.markSquareAt(TTTGame.pickRandomly(validChoices),
+        this.computer.getMarker());
+    }
   }
 
   gameOver() {
@@ -228,13 +245,22 @@ class TTTGame {
     this.board = new Board();
   }
 
-  static joinOr = function (arr, sep = ', ', conj = 'or') {
+  static joinOr (arr, sep = ', ', conj = 'or') {
     if (arr.length === 1) return arr.toString();
     if (arr.length === 2) return arr.join(` ${conj} `);
     const arrFront = arr.slice();
     const arrEnd = arrFront.pop();
     return arrFront.join(`${sep}`) + `${sep}${conj} ` + arrEnd;
   }
+
+  static pickRandomly (arr) {
+    const len = arr.length;
+    return arr[Math.floor(Math.random() * len)];
+  }
+}
+
+function pause() {
+  readline.question('Hit Enter key to continue.', {hideEchoBack: true, mask: ''});
 }
 
 let game = new TTTGame();

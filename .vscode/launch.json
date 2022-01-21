@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/js_109/scratch_pad.js"
+            "program": "${workspaceFolder}/js_120/ttt_oo.js"
         }
     ]
 }

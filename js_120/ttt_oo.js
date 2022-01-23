@@ -296,9 +296,5 @@ class TTTGame {
   }
 }
 
-function pause() {
-  readline.question('Hit Enter key to continue.', {hideEchoBack: true, mask: ''});
-}
-
 let game = new TTTGame();
 game.play();
